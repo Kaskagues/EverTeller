@@ -3,6 +3,8 @@
  */
 package logic;
 
+import java.awt.Color;
+
 import javax.swing.ImageIcon;
 
 /**
@@ -13,14 +15,14 @@ class Inside {
 	private String text;
 	private int terrain=0;
 
-    ImageIcon icons[][] = new ImageIcon[2][2];
+	java.util.Random rand= new java.util.Random();
+	float r = rand.nextFloat();
+	float g = rand.nextFloat();
+	float b = rand.nextFloat();
+
+    Color colors[]={Color.GREEN,Color.RED};
     
 	public Inside() {
-		icons[0][0] = new ImageIcon("src/logic/hexagonGreen0.png");
-		icons[0][1] = new ImageIcon("src/logic/hexagonGreenB0.png");
-		
-		icons[1][0] = new ImageIcon("src/logic/hexagonPink0.png");
-		icons[1][1] = new ImageIcon("src/logic/hexagonPinkB0.png");
 		}
 	/**
 	 * @param string
@@ -35,13 +37,20 @@ class Inside {
 	 * 
 	 */
 	public void changeTerrain(int pNumber) {
+
+		r = rand.nextFloat();
+		g = rand.nextFloat();
+		b = rand.nextFloat();
+		
 		terrain=pNumber;
 	}
 	/**
 	 * @return
 	 */
-	public ImageIcon[] getTerrain() {
-		return icons[terrain];
+	public Color getTerrain() {
+		
+		return new Color(r, g, b);
+//		return colors[terrain];
 	}
 
 }

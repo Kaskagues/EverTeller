@@ -14,8 +14,8 @@ class HexagonGrid {
 //	private int topSide=0;
 	
 	public HexagonGrid(int width, int length) {
-		dimensionX=width;
-		dimensionY=length;
+		dimensionX=width*2;
+		dimensionY=length*2;
 		if(dimensionX>1&&dimensionY>1) {
 			init();
 			createGrid();
@@ -68,21 +68,10 @@ class HexagonGrid {
 		}
 	}
 	
-	
-	/**
-	 * @param coordX
-	 * @param coordY
-	 * @param hex
-	 */
 	private void addHexToGrid(int coordX, int coordY, Hexagon hex) {
 		if(hex.inside.getText()==null)hex.inside.setText("("+(coordX-1)+","+(coordY-1)+")");
 		grid[coordX][coordY]=hex;
 	}
-	/**
-	 * @param coordX
-	 * @param coordY
-	 * @param hex
-	 */
 	private void addWarpingHorizon(int coordX, int coordY, Hexagon hex) {
 		//First and last column
 		if(coordX==1)
@@ -108,33 +97,19 @@ class HexagonGrid {
 		}
 		
 	}
-	/**
-	 * @param i
-	 * @return
-	 */
 	private int fixcoordenates(int i) {
 		return (i>=dimensionX-1 ? i-dimensionX+2 : i);
 	}
-	/**
-	 * @param coordX
-	 * @param coordY
-	 */
 	private void addSides(int coordX, int coordY) {
-		//HashSides?
 		Hexagon hex= grid[coordX][coordY];
 		
 		for(int sideN=0; sideN<6; sideN++) {
 			if(!hex.hasSide(sideN)) {
 				int[] facingCoords=sidePointigCoords(sideN,new int[]{coordX,coordY});
 				hex.addSide(sideN, grid[facingCoords[0]][facingCoords[1]]);
-//				grid[facingCoords[0]][facingCoords[1]].addSide(mirrorSide(sideN), hex.getSide(sideN));
 			}
 		}
 	}
-	/**
-	 * @param sideN is going to be 0<= sideN <= 5
-	 * @return
-	 */
 	private int[] sidePointigCoords(int sideN, int[] coords) {
 		int[] facing= new int[]{coords[0],coords[1]};
 		
@@ -168,19 +143,6 @@ class HexagonGrid {
 		}
 		return facing;
 	}
-//	private int mirrorSide(int pSide) {
-//		return correct(pSide+sideAmount/2);
-//	}
-//	/**
-//	 * @param pSide
-//	 */
-//	private int correct(int pSide) {
-//		if(pSide>=sideAmount)
-//			pSide= pSide-sideAmount;
-//		else if(pSide<0)
-//			pSide=pSide+sideAmount;
-//		return pSide;
-//	}
 	public Polygon2 get(int x, int y){
 //		x++;
 //		y++;

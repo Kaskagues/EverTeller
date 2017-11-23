@@ -50,7 +50,6 @@ class Side {
 		this.inside = pInside;
 	}
 	public Polygon2 getOtherSide(Polygon2 pPolygon){
-		System.out.println(this);
 		if(pPolygon!=polygons[0]&&pPolygon!=polygons[1]) {
 			try {
 				throw new Exception("The polygon you are sending is not in this side");

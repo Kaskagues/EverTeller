@@ -1,15 +1,21 @@
 /**
+
  * 
  */
 package logic;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -26,30 +32,32 @@ import javax.swing.Timer;
  */
 public class ButtonGrid {
 	private JFrame frame=new JFrame(); //creates frame
-	private JPanel borderPanel= new JPanel(new BorderLayout());
+	private Container borderPanel= frame.getContentPane();
 	private JPanel grid= new JPanel(); //names the grid of buttons
 	private HexagonGrid hexaGrid;
-    private Hexagon hex;
-    private int windowH=750,windowL=750;
+    private Hexagon hex,hex2;
+    private int windowH=500,windowL=500,escale;
     private JPanel i=new JPanel();
     private Timer timer;
+	private ImageIcon icon;
 	 
-	public ButtonGrid(int width, int length){ //constructor with 2 parameters
+	public ButtonGrid(int height, int width){ //constructor with 2 parameters
 		int horizontal, vertical;
-		hexaGrid= new HexagonGrid(width,length);
+		hexaGrid= new HexagonGrid(height,width);
 		
 		horizontal=hexaGrid.getHorizontal();
         vertical=hexaGrid.getVertical();
-        windowH=vertical*64;
-        windowL=horizontal*64;
-        
+
+		float sizeOfGrid=1.0f;
+		escale=(int) ((windowH*sizeOfGrid)/(vertical+0.5f));
+		
+    	icon = new ImageIcon(new ImageIcon("src/logic/hexagonRegular.png").getImage().getScaledInstance(escale, escale,  java.awt.Image.SCALE_SMOOTH));
+    	
         hex=(Hexagon) hexaGrid.get(vertical/2, horizontal/2);
-        hex=(Hexagon) hexaGrid.get(4, 1);
-        hex.movement(2, 1);
-        createGrid(horizontal,vertical);
-        frame.add(borderPanel);
+        hex2=(Hexagon) hexaGrid.get(vertical/2,1);
+        createGrid(vertical,horizontal);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-		frame.setSize(windowH,windowH);
+		frame.setSize(windowH,windowL);
 		frame.invalidate();
 		frame.validate();
 		frame.repaint();
@@ -58,26 +66,33 @@ public class ButtonGrid {
         timer.start();
 	}
 	private void createGrid(int vertical, int horizontal) {
-        JPanel boxH = new JPanel(new GridLayout(1,horizontal));
+        JPanel boxH = new JPanel();
         JPanel boxV;
         
+        boxH.setBackground(Color.GRAY);
+        boxH.setLayout(new BoxLayout(boxH,BoxLayout.X_AXIS));
         for(int x=0; x<horizontal; x++){
             boxV= new JPanel();
             boxV.setLayout(new BoxLayout(boxV,BoxLayout.Y_AXIS));
+            boxV.setBackground(Color.BLACK);
             for(int y=0; y<vertical; y++){
             	JButton j=filledHex(x, y);
             	if(x%2!=0&&y==0)
-            		boxV.add(Box.createVerticalStrut(j.getHeight()/2));
+            			boxV.add(Box.createRigidArea(new Dimension(0,j.getHeight()/2)));
+            		
             	boxV.add(j);
+            	
+            	if(x%2==0&&y==vertical-1)
+        			boxV.add(Box.createRigidArea(new Dimension(0,j.getHeight()/2)));
             }
-        	boxV.setBackground(Color.BLACK);
             boxH.add(boxV);
         }
-        grid.add(BorderLayout.WEST,boxH);
-        borderPanel.add(grid);
+        grid.add(boxH);
+        borderPanel.add(BorderLayout.CENTER,grid);
         timer = new Timer(100, new ActionListener() {
           int num = 0;
           int tmp=500;
+          int power=2;
           public void actionPerformed(ActionEvent e) {
               if (num > tmp+16) {
                   ((Timer) e.getSource()).stop();
@@ -85,12 +100,15 @@ public class ButtonGrid {
 //              	if(num>tmp)
 //              		frame.setSize((255-((num-tmp)*(num-tmp)))*3, (255-(num-tmp)*(num-tmp))*3);
 //              	else 
-              		frame.setSize(windowH,windowH);
-              	hex.movement(2, 0);
+//              		frame.setSize(windowH,windowH);
+              	hex.movement(power, 0);
+//              	hex2.movement(1, 0);
                   num++;
-          		hex=(Hexagon) hex.getSide(1).getOtherSide(hex);
+          		hex=(Hexagon) hex.getSide(new Random().nextInt(6)).getOtherSide(hex);
+//          		hex2=(Hexagon) hex2.getSide(1).getOtherSide(hex2);
           		grid.removeAll();
-          		hex.movement(2, 1);
+          		hex.movement(power, 1);
+//              	hex2.movement(1, 1);
           		createGrid(vertical, horizontal);
           		frame.invalidate();
           		frame.validate();
@@ -106,21 +124,32 @@ public class ButtonGrid {
 	 * @param y
 	 */
 	private JButton filledHex(int x, int y) {
-		Polygon2 in=hexaGrid.get(x, y);
+//		StretchIcon iconS = new StretchIcon(icon.getImage());
+//		Image img = icon.getImage();
+//		BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+//		Graphics g = bi.createGraphics();
+//		g.drawImage(img,escale,escale,img.getHeight(null),img.getWidth(null), null,null);
+//		icon = new ImageIcon(bi);
 		
-		ImageIcon icon= new ImageIcon("src/logic/hexagonRegular.png");
+
+		Polygon2 in=hexaGrid.get(x, y);
 		JButton button= new JButton(icon);
+//		iconS.setImageObserver(button);
+//		button.setIcon(iconS);
+		
+    	button.setSize(new Dimension(escale, escale));
+    	button.setPreferredSize(new Dimension(escale, escale));
+
 		button.setBackground(in.getInside().getTerrain());
     	button.setToolTipText((in.getInside().getText()));
-    	button.setSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
-    	button.setPreferredSize(new Dimension(icon.getIconWidth()-2, icon.getIconHeight()-2));
     	button.setBorderPainted(false);
+    	
 		return button;
 	}
 	public static void main(String[] args){
 		SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-				new ButtonGrid(6,6);
+				new ButtonGrid(5,5);
 				}
 				});
 	}

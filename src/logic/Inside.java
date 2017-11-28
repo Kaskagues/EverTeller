@@ -47,9 +47,9 @@ class Inside {
 			g=0.3f;
 			b=0.1f;
 
-			r = rand.nextFloat();
-			g = rand.nextFloat();
-			b = rand.nextFloat();
+//			r = rand.nextFloat();
+//			g = rand.nextFloat();
+//			b = rand.nextFloat();
 		}
 		
 		terrain=pNumber;
@@ -62,5 +62,19 @@ class Inside {
 		return new Color(r, g, b);
 //		return colors[terrain];
 	}
-
+	/**
+	 * @param i
+	 */
+	public void setHeight(double i) {
+		double max= 1;
+		double min= 0;
+		
+		float toMax=1f;
+		float toMin=0f;
+		
+		g=(float)((toMax-toMin)*(i-min)/(max-min)+toMin);	
+	}
+	public String getHeight() {
+		return g+"";
+	}
 }

@@ -37,7 +37,6 @@ public class ButtonGrid {
 	private HexagonGrid hexaGrid;
     private Hexagon hex,hex2;
     private int windowH=500,windowL=500,escale;
-    private JPanel i=new JPanel();
     private Timer timer;
 	private ImageIcon icon;
 	 
@@ -63,7 +62,7 @@ public class ButtonGrid {
 		frame.repaint();
         frame.setVisible(true);
        
-        timer.start();
+//        timer.start();
 	}
 	private void createGrid(int vertical, int horizontal) {
         JPanel boxH = new JPanel();
@@ -104,7 +103,8 @@ public class ButtonGrid {
               	hex.movement(power, 0);
 //              	hex2.movement(1, 0);
                   num++;
-          		hex=(Hexagon) hex.getSide(new Random().nextInt(6)).getOtherSide(hex);
+//          		hex=(Hexagon) hex.getSide(new Random().nextInt(6)).getOtherSide(hex);
+                  hex=(Hexagon) hex.getSide(1).getOtherSide(hex);
 //          		hex2=(Hexagon) hex2.getSide(1).getOtherSide(hex2);
           		grid.removeAll();
           		hex.movement(power, 1);
@@ -141,7 +141,7 @@ public class ButtonGrid {
     	button.setPreferredSize(new Dimension(escale, escale));
 
 		button.setBackground(in.getInside().getTerrain());
-    	button.setToolTipText((in.getInside().getText()));
+    	button.setToolTipText((in.getInside().getText())+" "+in.getInside().getHeight());
     	button.setBorderPainted(false);
     	
 		return button;
@@ -149,7 +149,7 @@ public class ButtonGrid {
 	public static void main(String[] args){
 		SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-				new ButtonGrid(5,5);
+				new ButtonGrid(6,6);
 				}
 				});
 	}

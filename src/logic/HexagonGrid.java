@@ -3,6 +3,7 @@
  */
 package logic;
 
+
 /**
  * @author Andoni Aranguren
  *
@@ -10,7 +11,6 @@ package logic;
 class HexagonGrid {
 	private Hexagon[][] grid;
 	private int dimensionX,dimensionY;
-	private int sideAmount;
 //	private int topSide=0;
 	
 	public HexagonGrid(int width, int length) {
@@ -36,7 +36,6 @@ class HexagonGrid {
 		dimensionX= dimensionX+2;
 		dimensionY= dimensionY+2;
 		grid= new Hexagon[dimensionX][dimensionY];
-		sideAmount=6;
 	}
 	private void initException() {
 		dimensionX= 1;
@@ -59,13 +58,21 @@ class HexagonGrid {
 				addWarpingHorizon(coordX,coordY,hex);
 			}
 		}
-			
+		
+		Perlin p = new Perlin();
+		double[][] map= p.genMap(dimensionY-2, dimensionX-2, 1f,0.05f, 3f);
+		double[][] map1= p.genMap(dimensionY-2, dimensionX-2, 0.008f,0.00004f, 2f);
+		double[][] map2= p.genMap(dimensionY-2, dimensionX-2, 0.00008f,0.000004f, 1f);
+		double a=0;
 		//Link the hexagons
 		for(int coordY=1; coordY<dimensionY-1; coordY++) {
 			for(int coordX=1; coordX<dimensionX-1; coordX++) {
 				addSides(coordX,coordY);
+				if(a<(map[coordY-1][coordX-1])) a=((map[coordY-1][coordX-1]*0.5+map1[coordY-1][coordX-1]*0.2+map2[coordY-1][coordX-1]*0.3));
+				grid[coordY][coordX].inside.setHeight(((map[coordY-1][coordX-1]*0.8+map1[coordY-1][coordX-1]*0.1+map2[coordY-1][coordX-1]*0.1)));
 			}
 		}
+		System.out.println(a);
 	}
 	
 	private void addHexToGrid(int coordX, int coordY, Hexagon hex) {
